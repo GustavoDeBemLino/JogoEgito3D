@@ -29,7 +29,7 @@ public class LockTrigger : MonoBehaviour
             if (hasKey)
             {
                 Debug.Log($"Fechadura {lockColor} aberta com chave!");
-                doorToOpen.transform.Translate(Vector3.up * 3f);
+                doorToOpen.transform.Translate(Vector3.up * 30f);
             }
             else
             {

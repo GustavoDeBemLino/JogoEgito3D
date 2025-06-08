@@ -34,6 +34,6 @@ public class LeverPuzzle : MonoBehaviour
 
     void OpenDoor()
     {
-        door.transform.Translate(Vector3.up * 3f);
+        door.transform.Translate(Vector3.up * 9f);
     }
 }
