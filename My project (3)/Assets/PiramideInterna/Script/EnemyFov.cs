@@ -1,24 +1,32 @@
-using TreeEditor;
 using UnityEngine;
+using UnityEngine.AI; // necessï¿½rio para usar o NavMeshAgent
 
 public class EnemyFov : MonoBehaviour
 {
-    public Transform jogador;            
-    public float raioVisao = 5f;         
-    public float anguloVisao = 90f;       
-    public LayerMask obstaculos;          
+    public Transform jogador;
+    public float raioVisao = 15f;
+    public float anguloVisao = 360f;
+    public LayerMask obstaculos;
+
+    private NavMeshAgent agente;
+    private Animator animator;
+
+    void Start()
+    {
+        agente = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
+
+        if (jogador == null)
+        {
+            Debug.LogWarning("Jogador nï¿½o estï¿½ atribuï¿½do no inspetor!");
+        }
+    }
 
     void Update()
     {
-        if (jogador == null)
-        {
-            Debug.LogWarning("Jogador não está atribuído no inspetor!");
-            return;
-        }
+        if (jogador == null) return;
 
         Vector3 direcaoJogador = jogador.position - transform.position;
-
-        
         direcaoJogador.y = 0;
         Vector3 forward = transform.forward;
         forward.y = 0;
@@ -32,27 +40,26 @@ public class EnemyFov : MonoBehaviour
             if (angulo < anguloVisao / 2f)
             {
                 RaycastHit hit;
-                if (Physics.Raycast(transform.position, direcaoJogador.normalized, out hit, distancia, ~0))
+                if (Physics.Raycast(transform.position, direcaoJogador.normalized, out hit, distancia, ~obstaculos))
                 {
                     if (hit.transform == jogador)
                     {
-                        Debug.Log("Inimigo vê o jogador (sem obstáculos).");
-                    }
-                    else
-                    {
-                        Debug.Log("Inimigo não vê o jogador (obstáculo na frente).");
+                        Debug.Log("Inimigo vï¿½ o jogador (sem obstï¿½culos).");
+
+                        agente.SetDestination(jogador.position);
+
+                        // Ativa animaï¿½ï¿½o de andar
+                        animator.SetInteger("transitions", 1);
+                        return;
                     }
                 }
             }
-            else
-            {
-                Debug.Log("Jogador fora do ângulo de visão.");
-            }
         }
-        else
-        {
-            Debug.Log("Jogador está muito longe.");
-        }
-    }
 
+        // Se nï¿½o vï¿½ o jogador, para
+        agente.ResetPath();
+
+        // Volta pra Idle
+        animator.SetInteger("transitions", 0);
+    }
 }
