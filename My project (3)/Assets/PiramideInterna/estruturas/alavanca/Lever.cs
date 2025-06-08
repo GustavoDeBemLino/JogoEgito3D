@@ -1,5 +1,9 @@
 using UnityEngine;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+using UnityEngine.UI;
+>>>>>>> Stashed changes
 =======
 using UnityEngine.UI;
 >>>>>>> Stashed changes
@@ -13,6 +17,9 @@ public class Lever : MonoBehaviour
     public Transform player;
     public float interactionDistance = 3f;
     public GameObject interactionUI; // Objeto de UI (ex: texto "Pressione E")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
     private Vector3 originalRotation;
@@ -24,20 +31,29 @@ public class Lever : MonoBehaviour
     {
         originalRotation = transform.eulerAngles;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         downRotation = originalRotation + new Vector3(-45, 0, 0); // alavanca pra baixo
 =======
+=======
+>>>>>>> Stashed changes
         downRotation = originalRotation + new Vector3(-45f, 0f, 0f);
 
         if (interactionUI != null)
             interactionUI.SetActive(false); // Esconde o texto no início
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     }
 
     void OnMouseDown()
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         Toggle();
 =======
+=======
+>>>>>>> Stashed changes
         if (player == null) return;
 
         float distance = Vector3.Distance(transform.position + Vector3.up, player.position + Vector3.up);
