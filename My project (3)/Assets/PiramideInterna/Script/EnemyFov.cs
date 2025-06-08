@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.AI; // necessário para usar o NavMeshAgent
+using UnityEngine.AI; // necessï¿½rio para usar o NavMeshAgent
 
 public class EnemyFov : MonoBehaviour
 {
@@ -18,7 +18,7 @@ public class EnemyFov : MonoBehaviour
 
         if (jogador == null)
         {
-            Debug.LogWarning("Jogador não está atribuído no inspetor!");
+            Debug.LogWarning("Jogador nï¿½o estï¿½ atribuï¿½do no inspetor!");
         }
     }
 
@@ -44,11 +44,11 @@ public class EnemyFov : MonoBehaviour
                 {
                     if (hit.transform == jogador)
                     {
-                        Debug.Log("Inimigo vê o jogador (sem obstáculos).");
+                        Debug.Log("Inimigo vï¿½ o jogador (sem obstï¿½culos).");
 
                         agente.SetDestination(jogador.position);
 
-                        // Ativa animação de andar
+                        // Ativa animaï¿½ï¿½o de andar
                         animator.SetInteger("transitions", 1);
                         return;
                     }
@@ -56,7 +56,7 @@ public class EnemyFov : MonoBehaviour
             }
         }
 
-        // Se não vê o jogador, para
+        // Se nï¿½o vï¿½ o jogador, para
         agente.ResetPath();
 
         // Volta pra Idle

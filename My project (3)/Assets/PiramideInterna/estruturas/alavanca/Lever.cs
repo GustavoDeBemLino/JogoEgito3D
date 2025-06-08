@@ -6,8 +6,8 @@ public class Lever : MonoBehaviour
     public bool isOn = false;
     public LeverPuzzle puzzleManager;
     public Transform player;
-    public float interactionDistance = 5f;
-    public GameObject interactionUI; // Referência ao texto da UI
+    public float interactionDistance = 2f;
+    public GameObject interactionUI; // ReferÃªncia ao texto da UI
 
     private Vector3 originalRotation;
     private Vector3 downRotation;
@@ -18,7 +18,7 @@ public class Lever : MonoBehaviour
         downRotation = originalRotation + new Vector3(-45, 0, 0);
 
         if (interactionUI != null)
-            interactionUI.SetActive(false); // Garante que começa escondido
+            interactionUI.SetActive(false); // Garante que comeÃ§a escondido
     }
 
     void Update()
@@ -32,7 +32,6 @@ public class Lever : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                Debug.Log("E pressionado");
                 Toggle();
             }
         }
