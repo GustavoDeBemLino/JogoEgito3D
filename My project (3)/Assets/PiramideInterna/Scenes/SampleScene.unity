@@ -49518,11 +49518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7a8020c9e6a19a04391bca3fd4169441, type: 3}
       propertyPath: m_TagString
-<<<<<<< HEAD
-      value: MainCamera
-=======
       value: Player
->>>>>>> main
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 7a8020c9e6a19a04391bca3fd4169441, type: 3}
       propertyPath: m_Controller
@@ -74992,17 +74988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28691f59c09822d44ae97d2d42612094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
-  velocidade: 5
-  gravidade: -9.81
-  checadorDeChao: {fileID: 691218708}
-  raioChao: 0.3
-  camadaDoChao:
-    serializedVersion: 2
-    m_Bits: 0
-=======
   velocidade: 50
->>>>>>> main
 --- !u!4 &1923051268 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7a8020c9e6a19a04391bca3fd4169441, type: 3}
@@ -84732,13 +84718,9 @@ SceneRoots:
   - {fileID: 1647470228}
   - {fileID: 1359025792}
   - {fileID: 897546660}
-<<<<<<< HEAD
-  - {fileID: 691218708}
-=======
   - {fileID: 1415700025}
   - {fileID: 1051119345}
   - {fileID: 592755041}
   - {fileID: 147495253}
   - {fileID: 880411547}
   - {fileID: 1238517511}
->>>>>>> main

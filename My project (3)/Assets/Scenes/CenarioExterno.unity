@@ -6747,7 +6747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7a8020c9e6a19a04391bca3fd4169441, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 24.88
+      value: 21.82
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7a8020c9e6a19a04391bca3fd4169441, type: 3}
       propertyPath: m_LocalPosition.z
@@ -16604,7 +16604,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2021909644
 Transform:
   m_ObjectHideFlags: 0
@@ -22411,15 +22411,8 @@ SceneRoots:
   - {fileID: 1930248702}
   - {fileID: 1399523259}
   - {fileID: 525812579}
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
   - {fileID: 749962523643440612}
   - {fileID: 2120327114}
   - {fileID: 732061572}
   - {fileID: 467408774}
   - {fileID: 1415045208}
->>>>>>> Stashed changes
-=======
-  - {fileID: 749962523643440612}
->>>>>>> main
