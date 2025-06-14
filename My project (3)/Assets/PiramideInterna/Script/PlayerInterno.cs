@@ -9,16 +9,16 @@ public class PlayerInterno : MonoBehaviour
     public float gravidade = -9.81f;
     private Vector3 velocidadeVertical = Vector3.zero;
 
-    [Header("Detecção de chão")]
+    [Header("Detecï¿½ï¿½o de chï¿½o")]
     public Transform checadorDeChao;
     public float raioChao = 0.3f;
     public LayerMask camadaDoChao;
     private bool estaNoChao;
 
-    [Header("Interação")]
+    [Header("Interaï¿½ï¿½o")]
     public LayerMask camadaInterativa; // defina como "Interactable"
     public float alcanceInteracao = 3f;
-    public Sphere carriedSphere; // esfera que o player está carregando
+    public Sphere carriedSphere; // esfera que o player estï¿½ carregando
 
     void Start()
     {
@@ -56,7 +56,7 @@ public class PlayerInterno : MonoBehaviour
 
         animator.SetBool("moving", movimento != Vector3.zero);
 
-        // Interação
+        // Interaï¿½ï¿½o
         if (Input.GetKeyDown(KeyCode.E))
         {
             TentarInteragir();
@@ -66,16 +66,36 @@ public class PlayerInterno : MonoBehaviour
     void TentarInteragir()
     {
         Ray ray = new Ray(transform.position + Vector3.up * 0.5f, transform.forward);
+        Debug.DrawRay(ray.origin, ray.direction * alcanceInteracao, Color.red, 2f);
+
+
         if (Physics.Raycast(ray, out RaycastHit hit, alcanceInteracao, camadaInterativa))
         {
+            Debug.Log("Raycast acertou: " + hit.collider.name);
+
             if (hit.collider.TryGetComponent(out Altar altar))
             {
+                Debug.Log("Interagindo com Altar");
                 altar.Interact(this);
             }
             else if (hit.collider.TryGetComponent(out Receptacle receptacle))
             {
+                Debug.Log("Interagindo com Receptï¿½culo");
                 receptacle.Interact(this);
             }
+            else if (hit.collider.TryGetComponent(out LockTrigger fechadura))
+            {
+                Debug.Log("Interagindo com Fechadura");
+                fechadura.Interact();
+            }
+            else
+            {
+                Debug.Log("Objeto atingido nï¿½o tem Altar nem Receptacle");
+            }
+        }
+        else
+        {
+            Debug.Log("Raycast nï¿½o acertou nada na camada Interativa");
         }
     }
 }

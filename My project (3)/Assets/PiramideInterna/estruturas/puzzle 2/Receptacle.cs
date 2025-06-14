@@ -9,9 +9,9 @@ public class Receptacle : MonoBehaviour
     {
         if (currentSphere == null && player.carriedSphere != null)
         {
-            // Coloca esfera no receptáculo
+            // Coloca esfera no receptï¿½culo
             currentSphere = player.carriedSphere;
-            currentSphere.transform.position = transform.position + Vector3.up * 0.5f;
+            currentSphere.transform.position = transform.position + Vector3.up * 0.1f;
             currentSphere.gameObject.SetActive(true);
             currentSphere.isHeld = false;
             player.carriedSphere = null;
