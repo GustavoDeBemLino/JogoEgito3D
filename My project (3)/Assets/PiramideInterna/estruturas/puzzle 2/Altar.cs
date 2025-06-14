@@ -20,7 +20,7 @@ public class Altar : MonoBehaviour
         else if (currentSphere == null && player.carriedSphere != null)
         {
             Debug.Log("Devolvendo esfera ao altar");
-            player.carriedSphere.transform.position = transform.position + Vector3.up * -0.825f;
+            player.carriedSphere.transform.position = transform.position + Vector3.up * 0.88f;
             player.carriedSphere.gameObject.SetActive(true);
             player.carriedSphere.isHeld = false;
             currentSphere = player.carriedSphere;
