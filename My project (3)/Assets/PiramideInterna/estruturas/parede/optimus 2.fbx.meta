@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Bloco.006
+    second: {fileID: 2100000, guid: 1846f7c8bcb54e249b3924b3fb7dcecc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: blue
     second: {fileID: 2100000, guid: 6356cb84637562e4bb8e31e64cc97b5e, type: 2}
   materials:
