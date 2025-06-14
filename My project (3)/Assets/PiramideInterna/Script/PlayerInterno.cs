@@ -15,6 +15,11 @@ public class PlayerInterno : MonoBehaviour
     public LayerMask camadaDoChao;
     private bool estaNoChao;
 
+    [Header("Interação")]
+    public LayerMask camadaInterativa; // defina como "Interactable"
+    public float alcanceInteracao = 3f;
+    public Sphere carriedSphere; // esfera que o player está carregando
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -23,14 +28,13 @@ public class PlayerInterno : MonoBehaviour
 
     void Update()
     {
+        // Movimento
         estaNoChao = Physics.CheckSphere(checadorDeChao.position, raioChao, camadaDoChao);
 
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        // Movimento relativo ao próprio Player
         Vector3 movimento = (transform.right * horizontal + transform.forward * vertical).normalized;
-
         controller.Move(movimento * velocidade * Time.deltaTime);
 
         if (!estaNoChao)
@@ -51,5 +55,27 @@ public class PlayerInterno : MonoBehaviour
         }
 
         animator.SetBool("moving", movimento != Vector3.zero);
+
+        // Interação
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            TentarInteragir();
+        }
+    }
+
+    void TentarInteragir()
+    {
+        Ray ray = new Ray(transform.position + Vector3.up * 0.5f, transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, alcanceInteracao, camadaInterativa))
+        {
+            if (hit.collider.TryGetComponent(out Altar altar))
+            {
+                altar.Interact(this);
+            }
+            else if (hit.collider.TryGetComponent(out Receptacle receptacle))
+            {
+                receptacle.Interact(this);
+            }
+        }
     }
 }
