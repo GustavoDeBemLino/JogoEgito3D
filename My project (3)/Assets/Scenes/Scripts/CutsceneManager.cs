@@ -4,6 +4,7 @@ using System.Collections;
 
 public class CutsceneManager : MonoBehaviour
 {
+    public GameObject Player;
     public GameObject cutsceneCamera;
     public GameObject PlayerCamera;
     public PlayableDirector timeline;
@@ -23,7 +24,9 @@ public class CutsceneManager : MonoBehaviour
     {
         timeline.Stop();
         cutsceneCamera.SetActive(false);
+        Player.SetActive(true);
         PlayerCamera.SetActive(true);
+        
        
     }
 }

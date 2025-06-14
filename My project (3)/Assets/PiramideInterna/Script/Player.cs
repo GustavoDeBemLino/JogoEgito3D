@@ -25,9 +25,7 @@ public class Player : MonoBehaviour
 
         if (Camera.main != null)
         {
-
             cameraTransform = GameObject.Find("CameraRig").transform;
-
         }
         else
         {
@@ -55,7 +53,12 @@ public class Player : MonoBehaviour
 
         Debug.DrawRay(transform.position, movimento * 2f, Color.red);
 
-        controller.Move(movimento * velocidade * Time.deltaTime);
+        // Detectar corrida
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        bool isMoving = movimento.magnitude > 0.1f;
+        float velocidadeAtual = isRunning ? velocidade * 4f : velocidade;
+
+        controller.Move(movimento * velocidadeAtual * Time.deltaTime);
 
         if (!estaNoChao)
         {
@@ -68,14 +71,14 @@ public class Player : MonoBehaviour
 
         controller.Move(velocidadeVertical * Time.deltaTime);
 
-        if (movimento != Vector3.zero)
+        if (isMoving)
         {
             Quaternion novaRotacao = Quaternion.LookRotation(movimento);
             transform.rotation = Quaternion.Slerp(transform.rotation, novaRotacao, Time.deltaTime * 10f);
         }
 
-        animator.SetBool("moving", movimento != Vector3.zero);
+        // Atualizar animações corretamente
+        animator.SetBool("Running", isMoving && isRunning);
+        animator.SetBool("moving", isMoving && !isRunning);
     }
 }
-
-
