@@ -6,8 +6,8 @@ public class Altar : MonoBehaviour
 
     public void Interact(PlayerInterno player)
     {
-
         Debug.Log("Intera��o com altar iniciada");
+
 
         if (currentSphere != null && player.carriedSphere == null)
         {
@@ -19,9 +19,7 @@ public class Altar : MonoBehaviour
         }
         else if (currentSphere == null && player.carriedSphere != null)
         {
-
             Debug.Log("Devolvendo esfera ao altar");
-
             player.carriedSphere.transform.position = transform.position + Vector3.up * -0.825f;
             player.carriedSphere.gameObject.SetActive(true);
             player.carriedSphere.isHeld = false;

@@ -81,6 +81,7 @@ public class PlayerInterno : MonoBehaviour
             else if (hit.collider.TryGetComponent(out Receptacle receptacle))
             {
                 Debug.Log("Interagindo com Recept�culo");
+
                 receptacle.Interact(this);
             }
             else if (hit.collider.TryGetComponent(out LockTrigger fechadura))
