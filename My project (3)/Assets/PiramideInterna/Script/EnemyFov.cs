@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.AI; // necess�rio para usar o NavMeshAgent
+using UnityEngine.AI; 
+using UnityEngine.SceneManagement; 
 
 public class EnemyFov : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class EnemyFov : MonoBehaviour
     private NavMeshAgent agente;
     private Animator animator;
 
+    private bool playerAvistado = false; 
+
     void Start()
     {
         agente = GetComponent<NavMeshAgent>();
@@ -18,7 +21,7 @@ public class EnemyFov : MonoBehaviour
 
         if (jogador == null)
         {
-            Debug.LogWarning("Jogador n�o est� atribu�do no inspetor!");
+            Debug.LogWarning("Jogador não está atribuído no inspetor!");
         }
     }
 
@@ -44,22 +47,35 @@ public class EnemyFov : MonoBehaviour
                 {
                     if (hit.transform == jogador)
                     {
-                        Debug.Log("Inimigo v� o jogador (sem obst�culos).");
+                        Debug.Log("Inimigo vê o jogador (sem obstáculos).");
 
                         agente.SetDestination(jogador.position);
 
-                        // Ativa anima��o de andar
                         animator.SetInteger("transitions", 1);
+
+                        if (!playerAvistado)
+                        {
+                            MusicManager.Instance.PlayAlertMusic();
+                            playerAvistado = true;
+                        }
                         return;
                     }
                 }
             }
         }
 
-        // Se n�o v� o jogador, para
         agente.ResetPath();
 
-        // Volta pra Idle
         animator.SetInteger("transitions", 0);
+
+        if (playerAvistado)
+        {
+            if (SceneManager.GetActiveScene().name == "SampleScene")
+                MusicManager.Instance.PlayInternoMusic();
+            else if (SceneManager.GetActiveScene().name == "CenarioExterno")
+                MusicManager.Instance.PlayExternoMusic();
+
+            playerAvistado = false;
+        }
     }
 }
