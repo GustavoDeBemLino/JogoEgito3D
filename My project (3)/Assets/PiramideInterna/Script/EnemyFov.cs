@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SceneManagement;
 
 public class EnemyFov : MonoBehaviour
 {
     public Transform jogador;
     public float raioVisao = 15f;
     public float anguloVisao = 360f;
-    public float distanciaAtaque = 2.5f; 
+    public float distanciaAtaque = 2.5f;
     public LayerMask obstaculos;
 
     private NavMeshAgent agente;
@@ -33,6 +32,15 @@ public class EnemyFov : MonoBehaviour
 
     void Update()
     {
+        // Se o player morreu, inimigos param de andar e atacar
+        if (VidaPlayer.PlayerMorto)
+        {
+            agente.isStopped = true;
+            animator.ResetTrigger("StartWalking");
+            animator.SetTrigger("StopWalking");
+            return;
+        }
+
         if (jogador == null) return;
 
         Vector3 direcaoJogador = jogador.position - transform.position;
@@ -85,7 +93,6 @@ public class EnemyFov : MonoBehaviour
                     animator.SetTrigger("Attack");
                     podeAtacar = false;
                     cronometroAtaque = tempoEntreAtaques;
-
                 }
 
                 if (estaAndando)
@@ -104,7 +111,7 @@ public class EnemyFov : MonoBehaviour
                 agente.isStopped = true;
                 agente.ResetPath();
 
-                MusicManager.Instance?.PlayInternoMusic(); 
+                MusicManager.Instance?.PlayInternoMusic();
             }
 
             if (estaAndando)
@@ -125,13 +132,34 @@ public class EnemyFov : MonoBehaviour
 
     public void DarDano()
     {
-        Debug.Log("Inimigo causou dano!");
+        // Se o player morreu, não dá dano
+        if (VidaPlayer.PlayerMorto) return;
 
-        VidaPlayer playerVida = jogador.GetComponent<VidaPlayer>();
-        if (playerVida != null)
+        if (jogador == null) return;
+
+        float distanciaAtual = Vector3.Distance(transform.position, jogador.position);
+
+        if (distanciaAtual <= distanciaAtaque)
         {
-            playerVida.TomarDano(10); 
+            if (!Physics.Raycast(transform.position + Vector3.up,
+                                 (jogador.position - transform.position).normalized,
+                                 distanciaAtual, obstaculos))
+            {
+                Debug.Log("Inimigo causou dano!");
+                VidaPlayer playerVida = jogador.GetComponent<VidaPlayer>();
+                if (playerVida != null)
+                {
+                    playerVida.TomarDano(10);
+                }
+            }
+            else
+            {
+                Debug.Log("Ataque bloqueado por obstáculo.");
+            }
+        }
+        else
+        {
+            Debug.Log("Jogador saiu do alcance antes do dano.");
         }
     }
-
 }

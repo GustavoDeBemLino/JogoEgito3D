@@ -3,19 +3,20 @@
 public class Espada : MonoBehaviour
 {
     public Transform handTransform;
-    public Transform cinturaTransform;            
-    public GameObject espadaNaMaoPrefab;          
-    public float distanciaColeta = 2f;            
+    public Transform cinturaTransform;
+    public GameObject espadaNaMaoPrefab;
+    public float distanciaColeta = 2f;
 
     [Header("Ajustes de posição e rotação")]
     public Vector3 posicaoOffsetMao = Vector3.zero;
     public Vector3 rotacaoOffsetMao = new Vector3(100f, 180f, 0f);
 
-
     public Vector3 posicaoOffsetCintura = Vector3.zero;
     public Vector3 rotacaoOffsetCintura = Vector3.zero;
-
     public Vector3 escalaEspada = new Vector3(0.05f, 0.05f, 0.05f);
+
+    [Header("Configuração de Dano")]
+    public int dano = 10; // <-- variável pública para o dano da espada
 
     private GameObject espadaEquipada;
     private bool pegouEspada = false;
@@ -48,10 +49,8 @@ public class Espada : MonoBehaviour
                 Destroy(objeto.gameObject);
                 pegouEspada = true;
 
-                // Instancia a espada guardada na cintura inicialmente
                 espadaEquipada = Instantiate(espadaNaMaoPrefab, cinturaTransform);
                 AjustarTransform(espadaEquipada.transform, posicaoOffsetCintura, rotacaoOffsetCintura, escalaEspada);
-
                 Debug.Log("Espada coletada e guardada na cintura.");
                 return;
             }
@@ -87,6 +86,17 @@ public class Espada : MonoBehaviour
         t.localPosition = posOffset;
         t.localRotation = Quaternion.Euler(rotOffset);
         t.localScale = escala;
+    }
+
+    public bool EstaComEspadaNaMao()
+    {
+        return pegouEspada && espadaEquipadaNaMao;
+    }
+
+    // Getter para dano (opcional, mas útil se quiser controlar acesso)
+    public int GetDano()
+    {
+        return dano;
     }
 
     void OnDrawGizmosSelected()
