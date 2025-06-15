@@ -1,18 +1,23 @@
 using UnityEngine;
-using UnityEngine.AI; 
-using UnityEngine.SceneManagement; 
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class EnemyFov : MonoBehaviour
 {
     public Transform jogador;
     public float raioVisao = 15f;
     public float anguloVisao = 360f;
+    public float distanciaAtaque = 2.5f; 
     public LayerMask obstaculos;
 
     private NavMeshAgent agente;
     private Animator animator;
 
-    private bool playerAvistado = false; 
+    private bool playerAvistado = false;
+    private bool estaAndando = false;
+    private bool podeAtacar = true;
+    public float tempoEntreAtaques = 1.5f;
+    private float cronometroAtaque = 0f;
 
     void Start()
     {
@@ -20,9 +25,10 @@ public class EnemyFov : MonoBehaviour
         animator = GetComponent<Animator>();
 
         if (jogador == null)
-        {
             Debug.LogWarning("Jogador não está atribuído no inspetor!");
-        }
+
+        if (animator == null)
+            Debug.LogError("Animator não encontrado no objeto!");
     }
 
     void Update()
@@ -35,6 +41,7 @@ public class EnemyFov : MonoBehaviour
         forward.y = 0;
 
         float distancia = direcaoJogador.magnitude;
+        bool viuJogador = false;
 
         if (distancia < raioVisao)
         {
@@ -47,35 +54,84 @@ public class EnemyFov : MonoBehaviour
                 {
                     if (hit.transform == jogador)
                     {
-                        Debug.Log("Inimigo vê o jogador (sem obstáculos).");
-
-                        agente.SetDestination(jogador.position);
-
-                        animator.SetInteger("transitions", 1);
-
-                        if (!playerAvistado)
-                        {
-                            MusicManager.Instance.PlayAlertMusic();
-                            playerAvistado = true;
-                        }
-                        return;
+                        viuJogador = true;
                     }
                 }
             }
         }
 
-        agente.ResetPath();
-
-        animator.SetInteger("transitions", 0);
-
-        if (playerAvistado)
+        if (viuJogador)
         {
-            if (SceneManager.GetActiveScene().name == "SampleScene")
-                MusicManager.Instance.PlayInternoMusic();
-            else if (SceneManager.GetActiveScene().name == "CenarioExterno")
-                MusicManager.Instance.PlayExternoMusic();
+            playerAvistado = true;
 
-            playerAvistado = false;
+            if (distancia > distanciaAtaque)
+            {
+                agente.isStopped = false;
+                agente.SetDestination(jogador.position);
+
+                if (!estaAndando)
+                {
+                    animator.ResetTrigger("StopWalking");
+                    animator.SetTrigger("StartWalking");
+                    estaAndando = true;
+                }
+            }
+            else
+            {
+                agente.isStopped = true;
+
+                if (podeAtacar)
+                {
+                    animator.SetTrigger("Attack");
+                    podeAtacar = false;
+                    cronometroAtaque = tempoEntreAtaques;
+
+                }
+
+                if (estaAndando)
+                {
+                    animator.ResetTrigger("StartWalking");
+                    animator.SetTrigger("StopWalking");
+                    estaAndando = false;
+                }
+            }
+        }
+        else
+        {
+            if (playerAvistado)
+            {
+                playerAvistado = false;
+                agente.isStopped = true;
+                agente.ResetPath();
+
+                MusicManager.Instance?.PlayInternoMusic(); 
+            }
+
+            if (estaAndando)
+            {
+                animator.ResetTrigger("StartWalking");
+                animator.SetTrigger("StopWalking");
+                estaAndando = false;
+            }
+        }
+
+        if (!podeAtacar)
+        {
+            cronometroAtaque -= Time.deltaTime;
+            if (cronometroAtaque <= 0f)
+                podeAtacar = true;
         }
     }
+
+    public void DarDano()
+    {
+        Debug.Log("Inimigo causou dano!");
+
+        VidaPlayer playerVida = jogador.GetComponent<VidaPlayer>();
+        if (playerVida != null)
+        {
+            playerVida.TomarDano(10); 
+        }
+    }
+
 }

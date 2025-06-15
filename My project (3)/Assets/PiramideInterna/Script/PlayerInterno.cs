@@ -9,16 +9,16 @@ public class PlayerInterno : MonoBehaviour
     public float gravidade = -9.81f;
     private Vector3 velocidadeVertical = Vector3.zero;
 
-    [Header("Detec��o de ch�o")]
+    [Header("Detecção de chão")]
     public Transform checadorDeChao;
     public float raioChao = 0.3f;
     public LayerMask camadaDoChao;
     private bool estaNoChao;
 
-    [Header("Intera��o")]
-    public LayerMask camadaInterativa; // defina como "Interactable"
+    [Header("Interação")]
+    public LayerMask camadaInterativa;
     public float alcanceInteracao = 3f;
-    public Sphere carriedSphere; // esfera que o player est� carregando
+    public Sphere carriedSphere;
 
     void Start()
     {
@@ -28,35 +28,42 @@ public class PlayerInterno : MonoBehaviour
 
     void Update()
     {
-        // Movimento
+        // Verifica se está no chão
         estaNoChao = Physics.CheckSphere(checadorDeChao.position, raioChao, camadaDoChao);
 
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        Vector3 movimento = (transform.right * horizontal + transform.forward * vertical).normalized;
-        controller.Move(movimento * velocidade * Time.deltaTime);
+        // Movimento baseado na rotação do próprio personagem
+        Vector3 direcaoMovimento = (transform.right * horizontal + transform.forward * vertical).normalized;
 
-        if (!estaNoChao)
-        {
-            velocidadeVertical.y += gravidade * Time.deltaTime;
-        }
-        else if (velocidadeVertical.y < 0)
+        // Aplica gravidade
+        if (estaNoChao && velocidadeVertical.y < 0)
         {
             velocidadeVertical.y = -0.1f;
         }
-
-        controller.Move(velocidadeVertical * Time.deltaTime);
-
-        if (movimento != Vector3.zero)
+        else
         {
-            Quaternion novaRotacao = Quaternion.LookRotation(movimento);
-            transform.rotation = Quaternion.Slerp(transform.rotation, novaRotacao, Time.deltaTime * 10f);
+            velocidadeVertical.y += gravidade * Time.deltaTime;
         }
 
-        animator.SetBool("moving", movimento != Vector3.zero);
+        // Movimento final
+        Vector3 movimentoFinal = direcaoMovimento * velocidade + velocidadeVertical;
+        controller.Move(movimentoFinal * Time.deltaTime);
 
-        // Intera��o
+        // Rotação mais suave, mesmo para trás e em diagonais
+        Vector3 direcaoOlhar = new Vector3(direcaoMovimento.x, 0, direcaoMovimento.z);
+        if (direcaoOlhar.magnitude > 0.1f)
+        {
+            Quaternion novaRotacao = Quaternion.LookRotation(direcaoOlhar);
+            // Reduz a sensibilidade da rotação aqui ↓
+            transform.rotation = Quaternion.Slerp(transform.rotation, novaRotacao, Time.deltaTime * 5f);
+        }
+
+        // Animação
+        animator.SetBool("moving", direcaoMovimento != Vector3.zero);
+
+        // Interação
         if (Input.GetKeyDown(KeyCode.E))
         {
             TentarInteragir();
@@ -67,7 +74,6 @@ public class PlayerInterno : MonoBehaviour
     {
         Ray ray = new Ray(transform.position + Vector3.up * 0.5f, transform.forward);
         Debug.DrawRay(ray.origin, ray.direction * alcanceInteracao, Color.red, 2f);
-
 
         if (Physics.Raycast(ray, out RaycastHit hit, alcanceInteracao, camadaInterativa))
         {
@@ -80,8 +86,7 @@ public class PlayerInterno : MonoBehaviour
             }
             else if (hit.collider.TryGetComponent(out Receptacle receptacle))
             {
-                Debug.Log("Interagindo com Recept�culo");
-
+                Debug.Log("Interagindo com Receptáculo");
                 receptacle.Interact(this);
             }
             else if (hit.collider.TryGetComponent(out LockTrigger fechadura))
@@ -91,12 +96,12 @@ public class PlayerInterno : MonoBehaviour
             }
             else
             {
-                Debug.Log("Objeto atingido n�o tem Altar nem Receptacle");
+                Debug.Log("Objeto atingido não tem Altar nem Receptacle");
             }
         }
         else
         {
-            Debug.Log("Raycast n�o acertou nada na camada Interativa");
+            Debug.Log("Raycast não acertou nada na camada Interativa");
         }
     }
 }
