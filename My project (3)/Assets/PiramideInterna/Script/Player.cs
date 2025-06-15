@@ -10,7 +10,9 @@ public class Player : MonoBehaviour
 
     public float velocidade = 5f;
     public float gravidade = -9.81f;
+    public float forcaPulo = 5f;
     private Vector3 velocidadeVertical = Vector3.zero;
+    private bool estaPulando;
 
     [Header("Detecção de chão")]
     public Transform checadorDeChao;
@@ -53,23 +55,36 @@ public class Player : MonoBehaviour
 
         Debug.DrawRay(transform.position, movimento * 2f, Color.red);
 
-        // Detectar corrida
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
         bool isMoving = movimento.magnitude > 0.1f;
         float velocidadeAtual = isRunning ? velocidade * 4f : velocidade;
 
-        controller.Move(movimento * velocidadeAtual * Time.deltaTime);
+        // Pulo
+        if (estaNoChao && Input.GetButtonDown("Jump"))
+        {
+            velocidadeVertical.y = Mathf.Sqrt(forcaPulo * -2f * gravidade);
+            estaPulando = true;
+            animator.SetBool("Jumping", true);
+        }
 
+        // Gravidade
         if (!estaNoChao)
         {
             velocidadeVertical.y += gravidade * Time.deltaTime;
+
+            if (velocidadeVertical.y < 0)
+            {
+                animator.SetBool("Jumping", false); // Começou a cair
+            }
         }
         else if (velocidadeVertical.y < 0)
         {
             velocidadeVertical.y = -0.1f;
         }
 
-        controller.Move(velocidadeVertical * Time.deltaTime);
+        // Combinar movimento horizontal e vertical
+        Vector3 movimentoFinal = movimento * velocidadeAtual + velocidadeVertical;
+        controller.Move(movimentoFinal * Time.deltaTime);
 
         if (isMoving)
         {
@@ -77,7 +92,9 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, novaRotacao, Time.deltaTime * 10f);
         }
 
-        // Atualizar animações corretamente
+        // Resetar animação de pulo ao tocar o chão
+    
+        // Animações de movimento
         animator.SetBool("Running", isMoving && isRunning);
         animator.SetBool("moving", isMoving && !isRunning);
     }
