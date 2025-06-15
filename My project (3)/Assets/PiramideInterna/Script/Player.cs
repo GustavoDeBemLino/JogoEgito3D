@@ -62,9 +62,11 @@ public class Player : MonoBehaviour
         // Pulo
         if (estaNoChao && Input.GetButtonDown("Jump"))
         {
+            animator.SetBool("Jumping", true);
+            
             velocidadeVertical.y = Mathf.Sqrt(forcaPulo * -2f * gravidade);
             estaPulando = true;
-            animator.SetBool("Jumping", true);
+            
         }
 
         // Gravidade
