@@ -1,40 +1,44 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI; // Para usar UI
 
 public class Lever : MonoBehaviour
 {
     public bool isOn = false;
     public LeverPuzzle puzzleManager;
     public Transform player;
-    public float interactionDistance = 3f;
-    public GameObject interactionUI; // Texto "Pressione E"
+    public float interactionDistance = 2f;
+    public GameObject interactionUI; // Referência ao texto da UI
 
     private Vector3 originalRotation;
     private Vector3 downRotation;
-    private bool playerNear = false;
 
     void Start()
     {
         originalRotation = transform.eulerAngles;
-        downRotation = originalRotation + new Vector3(-45f, 0f, 0f);
+        downRotation = originalRotation + new Vector3(-45, 0, 0);
 
         if (interactionUI != null)
-            interactionUI.SetActive(false); // Esconde o texto no início
+            interactionUI.SetActive(false); // Garante que começa escondido
     }
 
     void Update()
     {
-        if (player == null) return;
+        float distance = Vector3.Distance(transform.position, player.position);
 
-        float distance = Vector3.Distance(transform.position + Vector3.up, player.position + Vector3.up);
-        playerNear = distance <= interactionDistance;
-
-        if (interactionUI != null)
-            interactionUI.SetActive(playerNear);
-
-        if (playerNear && Input.GetKeyDown(KeyCode.E))
+        if (distance <= interactionDistance)
         {
-            Toggle();
+            if (interactionUI != null)
+                interactionUI.SetActive(true);
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Toggle();
+            }
+        }
+        else
+        {
+            if (interactionUI != null)
+                interactionUI.SetActive(false);
         }
     }
 
@@ -43,11 +47,5 @@ public class Lever : MonoBehaviour
         isOn = !isOn;
         transform.eulerAngles = isOn ? downRotation : originalRotation;
         puzzleManager.CheckSolution();
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position + Vector3.up, interactionDistance);
     }
 }
