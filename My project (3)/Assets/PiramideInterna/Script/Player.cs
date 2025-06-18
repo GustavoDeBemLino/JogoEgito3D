@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿
+// Alteração temporária para restaurar arquivos no GitHub
+
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
